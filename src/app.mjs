@@ -6,11 +6,12 @@ import express, { json } from 'express'
 //const ProductManager = require('./ProductManager.js');
 
 import ProductManager from './ProductManager.mjs'
-import { resolve } from 'path';
-import { rejects } from 'assert';
+
 //const { ProductManager } = require('./ProductManager.mjs')
 
+
 const productManager = new ProductManager();
+
 
 const server = http.createServer((request, response) => {
     console.log('Alguien me hizo una request')
@@ -18,13 +19,9 @@ const server = http.createServer((request, response) => {
 })
 
 const app = express();
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
-
-let getProducts = () => {
-    new Promise ((resolve, reject) => {
-        
-    }) 
-}
 
 app.get('/products', (request, response) => {
     console.log("Request")
@@ -36,40 +33,41 @@ app.get('/products', (request, response) => {
     const limit = request.query.limit
     
     let output = ''
-    
-    productManager.getProducts().then(async function (file){
 
-        let products = JSON.parse(file)
-        let out = ''
-        if(limit === undefined || limit == 0){
-            products.forEach(product => {
-                out += '<li>' + product.id +'</br> '+ product.title +'</br>' + product.description +'</br> ' + product.price +'</br>' + product.thumbnail + '</br>'+ product.code +'</br>'+ product.stock +'</li>'
-            })
+    let products = productManager.getProducts() 
+    //console.log(products)
+    if(products.length >= 1){
+    if(limit === undefined || limit == 0){
+
+        //products.forEach(product => )
+        for(let i = 0; i < products.length; i++){
+
+            output += '<li>' + products[i].id +'</br> '+ products[i].title +'</br>' + products[i].description +'</br> ' + products[i].price +'</br>' + products[i].thumbnail + '</br>'+ products[i].code +'</br>'+ products[i].stock +'</li>'
+
+        }
             
            console.log('Successful')
-           return response.status(200).end('<h1 style = "color: blue">' + out + ' <h1/>')
+           response.status(200).end('<h1 style = "color: blue">' + output + ' <h1/>')
            
-        }else{
+     }else{
             
-            //productManager.getProducts().then(async function(file) {
-                //let products =  JSON.parse(file)
-                //let out = ''
 
-            if(products.length >= limit ){
-                for(let i = 0; i < limit; i++){
-                    out += '<li>' + products[i].id +'</br> '+ products[i].title +'</br>' + products[i].description +'</br> ' + products[i].price +'</br>' + products[i].thumbnail + '</br>'+ products[i].code +'</br>'+ products[i].stock +'</li>'
-                }
-                
-                console.log('Successful response with: '+ limit + ' values')
-                return response.status(200).end('<h1 style = "color: blue">' + out + ' <h1/>')
-
-            }else{
-
-                response.status(400).end('<h1 style = "color: red">' + limit + ' products do not exist<h1/>')
+        if(products.length >= limit ){
+            for(let i = 0; i < limit; i++){
+                    output += '<li>' + products[i].id +'</br> '+ products[i].title +'</br>' + products[i].description +'</br> ' + products[i].price +'</br>' + products[i].thumbnail + '</br>'+ products[i].code +'</br>'+ products[i].stock +'</li>'
             }
+                
+            console.log('Successful response with: '+ limit + ' values')
+            response.status(200).end('<h1 style = "color: blue">' + output + ' <h1/>')
+
+        }else{
+
+            response.status(400).end('<h1 style = "color: red">' + limit + ' products do not exist<h1/>')
+        }
             //})
         }
-    })
+    }
+    
     
 })
 
@@ -77,10 +75,17 @@ app.get('/products/:pid', (request, response) => {
 
     console.log(request.params.pid)
     const id = +request.params.pid
-    productManager.getProductById(id).then(async function(product){
+    let product =  productManager.getProductById(id)
+    if(typeof product === 'object'){
         let out = '<li>' + product.id +'</br> '+ product.title +'</br>' + product.description +'</br> ' + product.price +'</br>' + product.thumbnail + '</br>'+ product.code +'</br>'+ product.stock +'</li>'
-        return response.status(200).end('<h1 style = "color: blue">' + out + ' <h1/>')
-    }).catch((err) => response.status(400).end('<h1 style = "color: red">' + err + ' <h1/>'))
+        
+        response.status(200).end('<h1 style = "color: blue">' + out + ' <h1/>')
+    }else{
+        response.status(400).end(product)
+    }
+    //response.status(400).end(product)
+    //console.log(product)
+     //response.status(400).end('<h1 style = "color: red">' + product + ' <h1/>')
 
 })
     

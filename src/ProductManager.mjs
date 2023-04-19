@@ -3,7 +3,6 @@ import tar from "tar"
 //import tar from './node_modules/tar/index.js'
 //const fs = require('fs')
 import fs from "fs"
-import { resolve } from "path"
 //import { resolve } from "path"
 //import { rejects } from "assert"
 //import fs from './node_modules/fs/*'
@@ -13,9 +12,10 @@ export default class ProductManager {
     
     #products
     #path
+
     constructor (){
         this.#products = []
-        this.#path = './products/products.json'
+        this.#path = "./products/products.json"
     }
 
     #generateID(){
@@ -139,66 +139,60 @@ export default class ProductManager {
     }
     //It returns all the products 
     getProducts = () => {
-
-        return new Promise((resolve, reject) => {
-        
-            if(fs.existsSync(this.#path)){
-                console.log('Reading file...')
-                //let products = fs.readFile(path, 'utf-8')
-                this.#products = fs.readFileSync(this.#path, 'utf-8')
-                return resolve(this.#products)
-                
-            }else{
-                return reject('File not found')
-            }
-    
-        })   
-
-        /*
         if(fs.existsSync(this.#path)){
             this.#products = JSON.parse(fs.readFileSync(this.#path, 'utf-8'))
             if(this.#products.length >= 1){
-                return this.#products
+                return this.#products 
             }
             
         }
         console.log('Products have not been created')
-        return this.#products*/
+        return this.#products
     }
-
-    /*readProducts = (path, type) => 
-        new Promise((resolve, reject) => {
-            fs.readFile(path, type, (err, file) =>{
-                if(err) reject(err)
-                resolve(file)
-            })
-        })
-
-    }*/
-
-    //It returns an specific product by the code  
-    getProductById = (id) => {
-        
-        if(fs.existsSync(this.#path)){
-        return new Promise((resolve, reject) => {
-
-               
-                this.#products = JSON.parse(fs.readFileSync(this.#path, 'utf-8'))
     
-                if(this.#products.some((product) => { return product.id === id })){
-                    let product = this.#products[this.#products.findIndex(product => product.id === id)]
-                    return resolve(product)
+    /*
+    if(fs.existsSync(this.#path)){
+        this.#products = JSON.parse(fs.readFileSync(this.#path, 'utf-8'))
+        if(this.#products.length >= 1){
+            return this.#products
+        }
         
-                }
-                    return reject("Product does not exist")
-                
+    }
+    console.log('Products have not been created')
+    return this.#products*/
+    
+    /*readProducts = (path, type) => 
+    new Promise((resolve, reject) => {
+        fs.readFile(path, type, (err, file) =>{
+            if(err) reject(err)
+            resolve(file)
+        })
+    })
+    
+}*/
+
+//It returns an specific product by the code  
+getProductById = (id) => {
+    
+        if( fs.existsSync(this.#path)){
+
+            
+            this.#products = JSON.parse(fs.readFileSync(this.#path, 'utf-8'))
+            
+            if(this.#products.some((product) => { return product.id === id })){
+                //let product = this.#products[this.#products.findIndex(product => product.id === id)]
+                    return this.#products[this.#products.findIndex(product => product.id === id)]
                     
-                })
+                }
+                return "Product does not exist"
+                
+                
+                
             }
-            return reject("The path: "+ this.#path + " has not been created") 
+            return "The path: "+ this.#path + " has not been created" 
         }
 
-    //Getters and Setters
+        //Getters and Setters
     setTitle = (id, title) => {        
         //this.getProduct(code).title = title
         /*
@@ -208,10 +202,10 @@ export default class ProductManager {
         }*/
         this.updateProduct(id, 'title', title)
     }
-
+    
     getTitle = (code) => {
         if(fs.existsSync(this.#path)){
-           
+            
             this.#products = JSON.parse(fs.readFileSync(this.#path, 'utf-8'))
 
             if(this.#products.some((product) => { return product.code === code })){
@@ -219,60 +213,60 @@ export default class ProductManager {
             }
                 return "Product has not found"
             
-        }
-        return "The path: "+ this.#path + " has not been created" 
-    }
-
-    setDescription = (id, description) => {
-        /*if(this.#products.some((p) => { return p.code === code })){            
-            this.#products[this.#products.findIndex(p => p.code === code)].description = description
-            console.log("Description has been updated")
-        }*/
-        this.updateProduct(id, 'description', description)
-        
-    }
-    getDescription = (code) => {
-
-        if(fs.existsSync(this.#path)){
-           
-            this.#products = JSON.parse(fs.readFileSync(this.#path, 'utf-8'))
-
-            if(this.#products.some((product) => { return product.code === code })){
-                return this.#products[this.#products.findIndex(product => product.code === code)].description
             }
-                return "Product has not found"
+            return "The path: "+ this.#path + " has not been created" 
+        }
+        
+        setDescription = (id, description) => {
+            /*if(this.#products.some((p) => { return p.code === code })){            
+                this.#products[this.#products.findIndex(p => p.code === code)].description = description
+                console.log("Description has been updated")
+            }*/
+            this.updateProduct(id, 'description', description)
             
         }
-        return "The path: "+ this.#path + " has not been created" 
-        /*if(this.#products.some((p) => { return p.code === code })){
-            return this.#products[this.#products.findIndex(p => p.code === code)].description
-        }
+        getDescription = (code) => {
+            
+            if(fs.existsSync(this.#path)){
+                
+                this.#products = JSON.parse(fs.readFileSync(this.#path, 'utf-8'))
+                
+                if(this.#products.some((product) => { return product.code === code })){
+                    return this.#products[this.#products.findIndex(product => product.code === code)].description
+                }
+                return "Product has not found"
+                
+            }
+            return "The path: "+ this.#path + " has not been created" 
+            /*if(this.#products.some((p) => { return p.code === code })){
+                return this.#products[this.#products.findIndex(p => p.code === code)].description
+            }
             return "Product has not found"*/
-    }
-
-    setPrice = (id, price) => {
-        /*this.getProduct(code).title = title
-        if(this.#products.some((p) => { return p.code === code })){            
-            this.#products[this.#products.findIndex(p => p.code === code)].price = price
-            console.log("Price has been updated")
-        }*/
-        this.updateProduct(id, 'price', price)
-    }
-
-    getPrice = (code) => {
-        if(fs.existsSync(this.#path)){
-           
+        }
+        
+        setPrice = (id, price) => {
+            /*this.getProduct(code).title = title
+            if(this.#products.some((p) => { return p.code === code })){            
+                this.#products[this.#products.findIndex(p => p.code === code)].price = price
+                console.log("Price has been updated")
+            }*/
+            this.updateProduct(id, 'price', price)
+        }
+        
+        getPrice = (code) => {
+            if(fs.existsSync(this.#path)){
+                
             this.#products = JSON.parse(fs.readFileSync(this.#path, 'utf-8'))
 
             if(this.#products.some((product) => { return product.code === code })){
                 return this.#products[this.#products.findIndex(product => product.code === code)].price
             }
-                return "Product has not found"
+            return "Product has not found"
             
         }
         return "The path: "+ this.#path + " has not been created" 
     }
-
+    
     setThumbnail = (id, thumbnail) => {
         /*this.getProduct(code).title = title
         if(this.#products.some((p) => { return p.code === code })){            
@@ -281,16 +275,16 @@ export default class ProductManager {
         }*/
         this.updateProduct(id,'thumbnail', thumbnail)
     }
-
+    
     getThumbnail = (code) => {
         if(fs.existsSync(this.#path)){
            
             this.#products = JSON.parse(fs.readFileSync(this.#path, 'utf-8'))
-
+            
             if(this.#products.some((product) => { return product.code === code })){
                 return this.#products[this.#products.findIndex(product => product.code === code)].thumbnail
             }
-                return "Product has not found"
+            return "Product has not found"
             
         }
         return "The path: "+ this.#path + " has not been created" 
@@ -304,24 +298,25 @@ export default class ProductManager {
         }*/
         this.updateProduct(id, 'stock', stock )
     }
-
+    
     getStock = (code) => {
         if(fs.existsSync(this.#path)){
            
             this.#products = JSON.parse(fs.readFileSync(this.#path, 'utf-8'))
-
+            
             if(this.#products.some((product) => { return product.code === code })){
                 return this.#products[this.#products.findIndex(product => product.code === code)].stock
             }
-                return "Product has not found"
+            return "Product has not found"
             
         }
         return "The path: "+ this.#path + " has not been created" 
     }
-
-
-
+    
+    
+    
 }
+
 
 //let manager = new ProductManager()
 
